@@ -168,7 +168,7 @@ combined_race_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=race))+
   facet_wrap(~race)
 ```
 
-<img src="NYC-Guided-project_files/figure-gfm/plot-1.png" style="display: block; margin: auto;" />
+<img src="README_figs/README-plot-1.png" style="display: block; margin: auto;" />
 
 ``` r
 #Trend of SAT scores with the type of program available for students
@@ -186,7 +186,7 @@ combined_type_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=`Type of pro
   facet_wrap(~`Type of program`)
 ```
 
-<img src="NYC-Guided-project_files/figure-gfm/plot-2.png" style="display: block; margin: auto;" />
+<img src="README_figs/README-plot-2.png" style="display: block; margin: auto;" />
 
 ``` r
 #Plot matrix table to see strength of relationships
@@ -194,7 +194,7 @@ combined_type_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=`Type of pro
 corrplot(cor_mat, method="circle", type = "upper",tl.col="black")
 ```
 
-<img src="NYC-Guided-project_files/figure-gfm/plot-3.png" style="display: block; margin: auto;" />
+<img src="README_figs/README-plot-3.png" style="display: block; margin: auto;" />
 
 ``` r
 #establish average scores per respondent group
@@ -221,7 +221,7 @@ survey_score_longer%>%ggplot(aes(x=respondent, y=avg_score))+
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-<img src="NYC-Guided-project_files/figure-gfm/plot-4.png" style="display: block; margin: auto;" />
+<img src="README_figs/README-plot-4.png" style="display: block; margin: auto;" />
 
 ``` r
 #Pivot table longer to establish individual rating per question type
@@ -259,4 +259,4 @@ que_score %>%
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-<img src="NYC-Guided-project_files/figure-gfm/plot-5.png" style="display: block; margin: auto;" />
+<img src="README_figs/README-plot-5.png" style="display: block; margin: auto;" />
