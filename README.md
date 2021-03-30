@@ -19,7 +19,7 @@ Questions looking to be answered are:
 The survey data can be found
 [here](https://data.cityofnewyork.us/Education/2011-NYC-School-Survey/mnz3-dyi8)
 while the performance and demographics data can be found
-[here](https://data.world/dataquest/nyc-schools-data/workspace/file?filename=combined.csv)
+[here](https://data.world/dataquest/nyc-schools-data/workspace/file?filename=combined.csv).
 
 ### Load relevant packages
 
@@ -174,13 +174,13 @@ combined_race_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=race))+
 #Trend of SAT scores with the type of program available for students
 combined_type_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=`Type of program`))+
   geom_point()+
-  labs(title="Relationship between SAT scores and socioeconomic information",
+  labs(title="Relationship between SAT scores and socioeconomic factors",
        x= "Percentage composition",
        y= "Average SAT score")+
   scale_color_manual(
-    name="Student Participation",
+    name="Student",
     values = c("maroon", "forestgreen", "chocolate"),
-    labels=c("Receiving school lunch \nat a discount", "Learning to speak English", "Receiving specialized instruction \nfor special needs")
+    labels=c("Receiving school \nlunch at a discount", "Learning to speak \nEnglish", "Receiving specialized \ninstruction for special needs")
   )+
   theme(plot.title = element_text(hjust = 0.5), strip.text.x = element_blank())+
   facet_wrap(~`Type of program`)
@@ -191,7 +191,9 @@ combined_type_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=`Type of pro
 ``` r
 #Plot matrix table to see strength of relationships
 
-corrplot(cor_mat, method="circle", type = "upper",tl.col="black")
+corrplot(cor_mat, method="circle", type = "upper",
+         tl.col="black", order="hclust",mar=c(0,0,1,0),
+         title="Corrolation between school performance and demographics")
 ```
 
 <img src="README_figs/README-plot-3.png" style="display: block; margin: auto;" />
@@ -254,8 +256,9 @@ que_score %>%
    scale_fill_manual(
     name="Survey Responses",
     values = c("firebrick3", "springGreen3", "DodgerBlue3"),
-    labels=c("Parent's rating", "Student's rating", "Teacher's rating")
+    labels=c("Parent", "Student", "Teacher")
   )+
+  scale_x_discrete(labels=c("aca" = "Academic \nExpectations", "com" = "Communication","eng" = "Engagement", "saf" = "Safety and \nRespect"))+
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
