@@ -28,6 +28,8 @@ library(tidyverse)
 library(ggplot2)
 library(dplyr)
 library(corrplot)
+library(plotly)
+
 
 ```
 
@@ -161,6 +163,7 @@ combined_race_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=race))+
   theme(plot.title = element_text(hjust = 0.5), strip.text.x = element_blank())+
   facet_wrap(~race)
 
+
 #Trend of SAT scores with the type of program available for students
 combined_type_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=`Type of program`))+
   geom_point()+
@@ -203,6 +206,17 @@ survey_score_longer%>%ggplot(aes(x=respondent, y=avg_score))+
        y="Average rating",
        x="Respondent")+
   theme(plot.title = element_text(hjust = 0.5))
+
+
+x <- list(title = "Respondent")
+y <- list(title = "Average rating")
+fig<-plot_ly(data = survey_score_longer, x=~respondent, 
+             y=~avg_score, color=~respondent, type = "box")%>%
+  layout(title= "NYC School quality perception survey responses",
+            xaxis=x, yaxis=y)
+fig
+
+
 
 #Pivot table longer to establish individual rating per question type
 que_score<-combined%>%

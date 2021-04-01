@@ -29,6 +29,7 @@ library(tidyverse)
 library(ggplot2)
 library(dplyr)
 library(corrplot)
+library(plotly)
 ```
 
 ### Import and preview data
@@ -226,6 +227,18 @@ survey_score_longer%>%ggplot(aes(x=respondent, y=avg_score))+
 <img src="README_figs/README-plot-4.png" style="display: block; margin: auto;" />
 
 ``` r
+x <- list(title = "Respondent")
+y <- list(title = "Average rating")
+fig<-plot_ly(data = survey_score_longer, x=~respondent, 
+             y=~avg_score, color=~respondent, type = "box")%>%
+  layout(title= "NYC School quality perception survey responses",
+            xaxis=x, yaxis=y)
+fig
+```
+
+<img src="README_figs/README-plot-5.png" style="display: block; margin: auto;" />
+
+``` r
 #Pivot table longer to establish individual rating per question type
 que_score<-combined%>%
   pivot_longer(cols = c(saf_p_11:aca_s_11),
@@ -262,4 +275,4 @@ que_score %>%
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-<img src="README_figs/README-plot-5.png" style="display: block; margin: auto;" />
+<img src="README_figs/README-plot-6.png" style="display: block; margin: auto;" />
