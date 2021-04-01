@@ -1,40 +1,39 @@
----
-title: "NYC Schools Survey Project (Improved)"
-author: "Fredrick Boshe"
-date: "30/03/2021"
-output:
-  github_document: default
-  rmarkdown::github_document: default
----
+NYC Schools Survey Project (Improved)
+================
+Fredrick Boshe
+30/03/2021
+
 # An analysis of a surveyed perception of New York City school quality
 
-This project looks into the perceptions of students, teachers and parents on the quality of New York City schools.
+This project looks into the perceptions of students, teachers and
+parents on the quality of New York City schools.
 
-Questions looking to be answered are: 
+Questions looking to be answered are:
 
-1. What is the relationship between demography and school performance?
-2. Are the perceptions related to/influenced by the demographics and success metrics of the school?
-3. Do the survey respondents have similar perceptions regarding the quality of NYC schools?
+1.  What is the relationship between demography and school performance?
+2.  Are the perceptions related to/influenced by the demographics and
+    success metrics of the school?
+3.  Do the survey respondents have similar perceptions regarding the
+    quality of NYC schools?
 
-The survey data can be found [here](https://data.cityofnewyork.us/Education/2011-NYC-School-Survey/mnz3-dyi8) while the performance and demographics data can be found [here](https://data.world/dataquest/nyc-schools-data/workspace/file?filename=combined.csv).
-
+The survey data can be found
+[here](https://data.cityofnewyork.us/Education/2011-NYC-School-Survey/mnz3-dyi8)
+while the performance and demographics data can be found
+[here](https://data.world/dataquest/nyc-schools-data/workspace/file?filename=combined.csv).
 
 ### Load relevant packages
 
-```{r setup, include=TRUE, results='hide', message=FALSE, warning=FALSE}
-
+``` r
 #Loading packages
 library(tidyverse)
 library(ggplot2)
 library(dplyr)
 library(corrplot)
-
 ```
 
 ### Import and preview data
 
-```{r Data Import, include=TRUE, results='hide', message=FALSE, warning=FALSE }
-
+``` r
 combined<-read_csv("combined.csv")
 gened<-read_tsv("masterfile11_gened_final.txt")
 spced<-read_tsv("masterfile11_d75_final.txt")
@@ -42,33 +41,37 @@ spced<-read_tsv("masterfile11_d75_final.txt")
 glimpse(combined)
 glimpse(gened)
 glimpse(spced)
-
 ```
 
-Both gened dataframe (General education schools) and spced dataframe (Special education schools), have a key (dbn) that can be matched to the combined dataframe (performance and demographics).
+Both gened dataframe (General education schools) and spced dataframe
+(Special education schools), have a key (dbn) that can be matched to the
+combined dataframe (performance and demographics).
 
-Special attention to rename "dbn" to "DBN" so they can match. Also note that some variables such as "principal", are not useful to this analysis. We shall drop such columns. Read the dataset dictionary for more information
+Special attention to rename “dbn” to “DBN” so they can match. Also note
+that some variables such as “principal”, are not useful to this
+analysis. We shall drop such columns. Read the dataset dictionary for
+more information
 
-The survey data is also granular, we would like to obtain aggregate perceptions of respondents for the schools in question.
+The survey data is also granular, we would like to obtain aggregate
+perceptions of respondents for the schools in question.
 
 The factors that respondents were surveyed on were:
 
-- Safety and Respect
-- Communication
-- Engagement
-- Academic Expectations
+  - Safety and Respect
+  - Communication
+  - Engagement
+  - Academic Expectations
 
 The surveyed groups were:
 
-- Parents
-- Teachers
-- Students
-- Total (The average of parent, teacher, and student scores
+  - Parents
+  - Teachers
+  - Students
+  - Total (The average of parent, teacher, and student scores
 
 ## Data cleaning and manipulation
 
-```{r cleaning,include=TRUE, results='hide', message=FALSE, warning=FALSE }
-
+``` r
 #Filter to remain with high school and aggregate columns only
 gened_clean<-gened%>%
   rename(DBN=dbn)%>%
@@ -90,15 +93,17 @@ survey<-rbind(gened_clean,spced_clean)
 
 combined<-combined%>%
   right_join(survey, by="DBN") #left join so we only keep corresponding data that we can use to compare
-  
 ```
-Using right_join() helps keep all the survey data that corresponds to matching demographic and school performance data. 
 
-We analyze how perception relates to demographic and school performance via a correlation matrix.
+Using right\_join() helps keep all the survey data that corresponds to
+matching demographic and school performance data.
+
+We analyze how perception relates to demographic and school performance
+via a correlation matrix.
 
 ### Analysis
 
-```{r analysis, include=TRUE, results='hide', message=FALSE, warning=FALSE }
+``` r
 #Pivot table longer to allow plotting of different races on the same plot
 combined_race_longer<-combined%>%
   pivot_longer(cols = c(asian_per, black_per, hispanic_per, white_per),
@@ -136,18 +141,19 @@ cor_tib<-cor_mat%>%
 strong_cor<-cor_tib%>%
   select(variable, Avg_SAT_score)%>%
   filter(Avg_SAT_score  < -0.25|Avg_SAT_score >0.25)
-
 ```
 
-The average SAT score has the strongest positive correlation with the percentage of white students in a school (r=0.65). While it has the strongest negative relationship with the percentage of students that are eligible for food discount at a school (r= -0.72)
+The average SAT score has the strongest positive correlation with the
+percentage of white students in a school (r=0.65). While it has the
+strongest negative relationship with the percentage of students that are
+eligible for food discount at a school (r= -0.72)
 
-
-We can now visualize relationships using scatter plots and the correlation output
+We can now visualize relationships using scatter plots and the
+correlation output
 
 ### Relationship plots
 
-```{r plot, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=6,fig.path= "README_figs/README-"}
-
+``` r
 combined_race_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=race))+
   geom_point()+
   labs(title="Relationship between SAT scores and racial composition of schools in NYC",
@@ -160,7 +166,11 @@ combined_race_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=race))+
   )+
   theme(plot.title = element_text(hjust = 0.5), strip.text.x = element_blank())+
   facet_wrap(~race)
+```
 
+<img src="README_figs/README-plot-1.png" style="display: block; margin: auto;" />
+
+``` r
 #Trend of SAT scores with the type of program available for students
 combined_type_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=`Type of program`))+
   geom_point()+
@@ -174,13 +184,21 @@ combined_type_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=`Type of pro
   )+
   theme(plot.title = element_text(hjust = 0.5), strip.text.x = element_blank())+
   facet_wrap(~`Type of program`)
+```
 
+<img src="README_figs/README-plot-2.png" style="display: block; margin: auto;" />
+
+``` r
 #Plot matrix table to see strength of relationships
 
 corrplot(cor_mat, method="circle", type = "upper",
          tl.col="black", order="hclust",mar=c(0,0,1,0),
          title="Corrolation between school performance and demographics")
+```
 
+<img src="README_figs/README-plot-3.png" style="display: block; margin: auto;" />
+
+``` r
 #establish average scores per respondent group
 
 survey_score<-combined%>%
@@ -203,7 +221,11 @@ survey_score_longer%>%ggplot(aes(x=respondent, y=avg_score))+
        y="Average rating",
        x="Respondent")+
   theme(plot.title = element_text(hjust = 0.5))
+```
 
+<img src="README_figs/README-plot-4.png" style="display: block; margin: auto;" />
+
+``` r
 #Pivot table longer to establish individual rating per question type
 que_score<-combined%>%
   pivot_longer(cols = c(saf_p_11:aca_s_11),
@@ -238,7 +260,6 @@ que_score %>%
   )+
   scale_x_discrete(labels=c("aca" = "Academic \nExpectations", "com" = "Communication","eng" = "Engagement", "saf" = "Safety and \nRespect"))+
   theme(plot.title = element_text(hjust = 0.5))
-
 ```
 
-
+<img src="README_figs/README-plot-5.png" style="display: block; margin: auto;" />
