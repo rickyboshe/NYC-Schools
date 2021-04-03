@@ -6,6 +6,7 @@ output:
   github_document: default
   rmarkdown::github_document: default
 ---
+
 # An analysis of a surveyed perception of New York City school quality
 
 This project looks into the perceptions of students, teachers and parents on the quality of New York City schools.
@@ -66,9 +67,9 @@ The surveyed groups were:
 - Parents
 - Teachers
 - Students
-- Total (The average of parent, teacher, and student scores
+- Total (The average of parent, teacher, and student scores)
 
-## Data cleaning and manipulation
+### **Data cleaning and manipulation**
 
 ```{r cleaning,include=TRUE, results='hide', message=FALSE, warning=FALSE }
 
@@ -101,9 +102,9 @@ We analyze how perception relates to demographic and school performance via a co
 
 ### Relationship Analysis
 
-####  Disparity in performance between NYC Boroughs
+####  **Disparity in performance between NYC Boroughs**
 
-```{r analysis1, include=TRUE, results='hide', message=FALSE, warning=FALSE, fig.align= "center", fig.width=7, fig.height=6, fig.path= "README_figs/README-"}
+```{r analysis1, include=TRUE, results='hide', message=FALSE, warning=FALSE, fig.align= "center"}
 
 #Analyze the disparity in performance between the Boroughs
 combined_boro<-combined%>%
@@ -122,25 +123,31 @@ fig1<-combined_boro_longer%>%ggplot(aes(x=boro, y=avg_sat_score, fill=boro))+
        x="Borough",
        fill="Borough")+
   theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+<center>
+```{r include=TRUE, echo=FALSE, results='hide', message=FALSE, warning=FALSE, fig.align= "center", fig.width=7, fig.height=6}
 fig1<-ggplotly(fig1)
 fig1<-hide_legend(fig1)
 fig1
-
 ```
+</center>
+
+
 <br><br>
 Schools in the Bronx are averaging lower SAT scores as compared to schools in Manhattan or Staten Island. This is not surprising considering the Socio-economic profile of the Boroughs in New York City. 
 <br><br>
 
 <center>
-
-<iframe src="https://public.tableau.com/views/NYCSocio-economicprofile/NYCSocio-economicProfile2?:language=en&:display_count=yes&:embed=yes&:publish=yes&" width = '600' height = '450'></iframe>
-
+![Socio-economic profile of NYC Boroughs](README_figs/Profile.png)
 </center>
 
+<br><br>
 
-####  Trend of NYC school performance with racial diversity of schools
+###  **Trend of NYC school performance with racial diversity of schools**
 
-```{r analysis, include=TRUE, results='hide', message=FALSE, warning=FALSE, fig.align= "center", fig.width=7, fig.height=6,fig.path= "README_figs/README-" }
+```{r analysis, include=FALSE, results='hide', message=FALSE, warning=FALSE, fig.align= "center", fig.width=7, fig.height=6}
 
 #Pivot table longer to allow plotting of different races on the same plot
 combined_race_longer<-combined%>%
@@ -172,13 +179,15 @@ rownames(cor_mat)<-c("Avg_SAT_score", "% receiving food discount",
                      "% male", "Safety", "Communication", "Engagement",
                      "Academic")
 
+
+
 ```
 
 
-####  How racial diversity relates to school performance 
+####  **How racial diversity relates to school performance** 
 
 
-```{r plot, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=6,fig.path= "README_figs/README-"}
+```{r plot, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=8, fig.height=6}
 
 #Relationship between school performance and their racial diversity
 race.labs<-c("Asian", "Black", "Hispanic", "White")
@@ -187,7 +196,7 @@ names(race.labs)<-c("asian_per", "black_per", "hispanic_per",
 
 fig2<-combined_race_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=race))+
   geom_point()+
-  labs(title="Relationship between SAT scores and racial composition of schools in NYC",
+  labs(title="Relationship between SAT scores and racial composition of \nschools in NYC",
        x= "Percentage composition",
        y= "Average SAT score")+
   scale_color_manual(
@@ -198,19 +207,20 @@ fig2<-combined_race_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=race))
   theme(plot.title = element_text(hjust = 0.5))+
   facet_wrap(~race, labeller = labeller(race=race.labs))
 
-fig2<-ggplotly(fig2)
-fig2<-hide_legend(fig2)
-fig2
 ```
+
+<center>
+![](README_figs/README-plot-1.png)
+</center>
 
 
 Schools with a higher proportion of Black and Hispanic have lower SAT scores as compared to schools with a higher share of White and Asian students.This could be due to the location, programs and resources at the disposal of schools. 
 
 Schools in boroughs like Staten Island and Manhattan would have more resources and have a higher proportion of White and Asian students as compared to schools in Bronx and Brooklyn. 
 
-####  How schools with special programs fair in academic performance 
+####  **How schools with special programs fair in academic performance** 
 
-```{r perform, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=6,fig.path= "README_figs/README-"}
+```{r perform, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=6}
 
 #Trend of SAT scores with the type of program available for students
 prog.labs<-c("Learning to speak English", "Receiving lunch discount",
@@ -230,16 +240,24 @@ fig3<-combined_type_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=`Type 
   theme(plot.title = element_text(hjust = 0.5))+ #strip.text.x = element_blank()
   facet_wrap(~`Type of program`, labeller = labeller(`Type of program`=prog.labs))
 
+```
+
+<center>
+```{r include=TRUE, echo=FALSE, results='hide', message=FALSE, warning=FALSE, fig.align= "center", fig.width=7, fig.height=6}
 fig3<-ggplotly(fig3)
 fig3<-hide_legend(fig3)
 fig3
 ```
+</center>
+
+
 The most significant observation is how drastically school performance drops with increase in number of students eligible for lunch discount at a school. This is an indication of a school being in a socially and economically disadvantaged location. Such schools rarely have enough resources to help students perform better academically.
 
 
 An increase in the sahre of students learning to speak English is also related to lower academic performance for the school. Learning to speak English can be an indicator of share of students with a lower economic migrant background. 
 <br><br>
-```{r perfrom2, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=6,fig.path= "README_figs/README-"}
+
+```{r perfrom2, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=6}
 
 p.mat<-cor_pmat(cor_mat)#pvalues
 
@@ -261,9 +279,15 @@ fig4 <- ggcorrplot(
   p.mat = p.mat
   )
 
+```
+
+<center>
+```{r include=TRUE, echo=FALSE,fig.align= "center",warning=FALSE, fig.width=8, fig.height=6}
 fig4<-ggplotly(fig4)
 fig4
 ```
+</center>
+
 
 A correlation analysis shows how strong the relationships between racial diversity and school programs are with the academic performance of the school.
 
@@ -271,9 +295,9 @@ When it comes to demographics, academic performance shows a strong positive corr
 
 Overall, the strongest positive relationships are among the perceptions of NYC schools. The respondents (teachers, students and parents) of the survey seem to have correlating perceptions of how NYC schools perform when it comes to academic performance, communication, engagement and safety. 
 
-####  How teachers, students and parents rate NYC schools 
+####  **How teachers, students and parents rate NYC schools** 
 
-```{r rating, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=6,fig.path= "README_figs/README-"}
+```{r rating, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=6, fig.height=5}
 #establish average scores per respondent group
 
 survey_score<-combined%>%
@@ -292,21 +316,21 @@ survey_score_longer<-survey_score%>%
 fig5<-survey_score_longer%>%ggplot(aes(x=respondent, y=avg_score, fill=respondent))+
   geom_boxplot()+
   scale_x_discrete(labels=c("parent_score_avg" = "Parent", "student_score_avg" = "Student","teacher_score_avg" = "Teacher"))+
-  labs(title = "Perception of NYC schools quality (survey responsens)",
+  labs(title = "Perception of NYC schools quality (survey responses)",
        y="Average rating",
        x="Respondent")+
   theme(plot.title = element_text(hjust = 0.5))
-
-fig5<-ggplotly(fig5)
-fig5<-hide_legend(fig5)
 fig5
 ```
+
+
+<br><br>
 Overall, parents seem to rate NYC schools the highest while students (not surprisingly `r emo::ji("smile")`) are rating the schools lowest. Teachers show the most broad rating of NYC schools. 
 
 
-####  How respondents rate NYC schools on academic performance, communication, engagement and, safety and respect
+####  **Survey responses on quality of NYC schools**
 
-```{r questions, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=6,fig.path= "README_figs/README-"}
+```{r questions, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=6}
 
 #Pivot table longer to establish individual rating per question type
 que_score<-combined%>%
@@ -339,10 +363,10 @@ fig6<-plot_ly(data = que_score, x=~question, y =~rating, color =~respondent,
       tickvals = list("aca","com","eng","saf"), 
          yaxis = list(title='Percentage')))
 
-fig6
+
 
 ```
 
 <b><br>
-Looking on how individual groups responded, the best rating was for **safety and respect** by parent respondents and the lowest was for **communication** by student respondents.
 
+Looking on how individual groups responded, the best rating was for **safety and respect** by parent respondents and the lowest was for **communication** by student respondents.
