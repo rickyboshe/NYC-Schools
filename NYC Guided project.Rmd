@@ -297,7 +297,7 @@ Overall, the strongest positive relationships are among the perceptions of NYC s
 
 ####  **How teachers, students and parents rate NYC schools** 
 
-```{r rating, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=6, fig.height=5}
+```{r rating, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=5}
 #establish average scores per respondent group
 
 survey_score<-combined%>%
@@ -363,10 +363,9 @@ fig6<-plot_ly(data = que_score, x=~question, y =~rating, color =~respondent,
       tickvals = list("aca","com","eng","saf"), 
          yaxis = list(title='Percentage')))
 
-
+fig6
 
 ```
-
 <b><br>
 
 Looking on how individual groups responded, the best rating was for **safety and respect** by parent respondents and the lowest was for **communication** by student respondents.

@@ -336,8 +336,11 @@ fig6<-plot_ly(data = que_score, x=~question, y =~rating, color =~respondent,
                       ticktext = list("Academic \nExpectations", "Communication", "Engagement", "Safety and \nRespect"), 
       tickvals = list("aca","com","eng","saf"), 
          yaxis = list(title='Percentage')))
+
+fig6
 ```
 
+<img src="NYC-Guided-project_files/figure-gfm/questions-1.png" style="display: block; margin: auto;" />
 <b><br>
 
 Looking on how individual groups responded, the best rating was for
