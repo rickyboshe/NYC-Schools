@@ -28,6 +28,9 @@ library(tidyverse)
 library(ggplot2)
 library(dplyr)
 library(corrplot)
+library(plotly)
+library(ggcorrplot)
+devtools::install_github("hadley/emo")
 
 ```
 
@@ -89,16 +92,56 @@ colSums(is.na(spced_clean)) #One missing student respondent
 survey<-rbind(gened_clean,spced_clean)
 
 combined<-combined%>%
-  right_join(survey, by="DBN") #left join so we only keep corresponding data that we can use to compare
+  right_join(survey, by="DBN") #right join so we only keep corresponding data that we can use to compare
   
 ```
 Using right_join() helps keep all the survey data that corresponds to matching demographic and school performance data. 
 
 We analyze how perception relates to demographic and school performance via a correlation matrix.
 
-### Analysis
+### Relationship Analysis
 
-```{r analysis, include=TRUE, results='hide', message=FALSE, warning=FALSE }
+####  Disparity in performance between NYC Boroughs
+
+```{r analysis1, include=TRUE, results='hide', message=FALSE, warning=FALSE, fig.align= "center", fig.width=7, fig.height=6, fig.path= "README_figs/README-"}
+
+#Analyze the disparity in performance between the Boroughs
+combined_boro<-combined%>%
+  filter(!is.na(boro))
+
+combined_boro_longer<-combined_boro%>%
+  pivot_longer(cols = c(asian_per, black_per, hispanic_per, white_per),
+               names_to="race",
+               values_to="percent")
+
+#Plot Performance disparity between Boroughs
+fig1<-combined_boro_longer%>%ggplot(aes(x=boro, y=avg_sat_score, fill=boro))+
+  geom_boxplot()+
+  labs(title = "Average school performance by Borough in NYC (2011)",
+       y="Average SAT Score",
+       x="Borough",
+       fill="Borough")+
+  theme(plot.title = element_text(hjust = 0.5))
+fig1<-ggplotly(fig1)
+fig1<-hide_legend(fig1)
+fig1
+
+```
+<br><br>
+Schools in the Bronx are averaging lower SAT scores as compared to schools in Manhattan or Staten Island. This is not surprising considering the Socio-economic profile of the Boroughs in New York City. 
+<br><br>
+
+<center>
+
+<iframe src="https://public.tableau.com/views/NYCSocio-economicprofile/NYCSocio-economicProfile2?:language=en&:display_count=yes&:embed=yes&:publish=yes&" width = '600' height = '450'></iframe>
+
+</center>
+
+
+####  Trend of NYC school performance with racial diversity of schools
+
+```{r analysis, include=TRUE, results='hide', message=FALSE, warning=FALSE, fig.align= "center", fig.width=7, fig.height=6,fig.path= "README_figs/README-" }
+
 #Pivot table longer to allow plotting of different races on the same plot
 combined_race_longer<-combined%>%
   pivot_longer(cols = c(asian_per, black_per, hispanic_per, white_per),
@@ -129,26 +172,20 @@ rownames(cor_mat)<-c("Avg_SAT_score", "% receiving food discount",
                      "% male", "Safety", "Communication", "Engagement",
                      "Academic")
 
-cor_tib<-cor_mat%>%
-  as.tibble(rownames="variable")#A tibble for easier viewing
-
-#Variables with strong relationship with Avg sat score
-strong_cor<-cor_tib%>%
-  select(variable, Avg_SAT_score)%>%
-  filter(Avg_SAT_score  < -0.25|Avg_SAT_score >0.25)
-
 ```
 
-The average SAT score has the strongest positive correlation with the percentage of white students in a school (r=0.65). While it has the strongest negative relationship with the percentage of students that are eligible for food discount at a school (r= -0.72)
 
+####  How racial diversity relates to school performance 
 
-We can now visualize relationships using scatter plots and the correlation output
-
-### Relationship plots
 
 ```{r plot, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=6,fig.path= "README_figs/README-"}
 
-combined_race_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=race))+
+#Relationship between school performance and their racial diversity
+race.labs<-c("Asian", "Black", "Hispanic", "White")
+names(race.labs)<-c("asian_per", "black_per", "hispanic_per",
+                    "white_per")
+
+fig2<-combined_race_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=race))+
   geom_point()+
   labs(title="Relationship between SAT scores and racial composition of schools in NYC",
        x= "Percentage composition",
@@ -158,11 +195,29 @@ combined_race_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=race))+
     values = c("Darkorange", "DarkGreen", "DarkBlue", "Purple"),
     labels=c("Asian", "Black", "Hispanic", "White")
   )+
-  theme(plot.title = element_text(hjust = 0.5), strip.text.x = element_blank())+
-  facet_wrap(~race)
+  theme(plot.title = element_text(hjust = 0.5))+
+  facet_wrap(~race, labeller = labeller(race=race.labs))
+
+fig2<-ggplotly(fig2)
+fig2<-hide_legend(fig2)
+fig2
+```
+
+
+Schools with a higher proportion of Black and Hispanic have lower SAT scores as compared to schools with a higher share of White and Asian students.This could be due to the location, programs and resources at the disposal of schools. 
+
+Schools in boroughs like Staten Island and Manhattan would have more resources and have a higher proportion of White and Asian students as compared to schools in Bronx and Brooklyn. 
+
+####  How schools with special programs fair in academic performance 
+
+```{r perform, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=6,fig.path= "README_figs/README-"}
 
 #Trend of SAT scores with the type of program available for students
-combined_type_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=`Type of program`))+
+prog.labs<-c("Learning to speak English", "Receiving lunch discount",
+             "Receiving specialized teaching")
+names(prog.labs)<-c("ell_percent","frl_percent", "sped_percent")
+
+fig3<-combined_type_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=`Type of program`))+
   geom_point()+
   labs(title="Relationship between SAT scores and socioeconomic factors",
        x= "Percentage composition",
@@ -170,17 +225,55 @@ combined_type_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=`Type of pro
   scale_color_manual(
     name="Student",
     values = c("maroon", "forestgreen", "chocolate"),
-    labels=c("Receiving school \nlunch at a discount", "Learning to speak \nEnglish", "Receiving specialized \ninstruction for special needs")
+    labels=c("Receiving lunch \ndiscount", "Learning to speak \nEnglish", "Receiving specialized \nteaching")
   )+
-  theme(plot.title = element_text(hjust = 0.5), strip.text.x = element_blank())+
-  facet_wrap(~`Type of program`)
+  theme(plot.title = element_text(hjust = 0.5))+ #strip.text.x = element_blank()
+  facet_wrap(~`Type of program`, labeller = labeller(`Type of program`=prog.labs))
+
+fig3<-ggplotly(fig3)
+fig3<-hide_legend(fig3)
+fig3
+```
+The most significant observation is how drastically school performance drops with increase in number of students eligible for lunch discount at a school. This is an indication of a school being in a socially and economically disadvantaged location. Such schools rarely have enough resources to help students perform better academically.
+
+
+An increase in the sahre of students learning to speak English is also related to lower academic performance for the school. Learning to speak English can be an indicator of share of students with a lower economic migrant background. 
+<br><br>
+```{r perfrom2, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=6,fig.path= "README_figs/README-"}
+
+p.mat<-cor_pmat(cor_mat)#pvalues
+
+cor_tib<-cor_mat%>%
+  as_tibble(rownames="variable")#A tibble for easier viewing
+
+
+#Variables with strong relationship with Avg sat score
+strong_cor<-cor_tib%>%
+  select(variable, Avg_SAT_score)%>%
+  filter(Avg_SAT_score  < -0.25|Avg_SAT_score >0.25)
+
+
+strong_cor_mat<-as.matrix(strong_cor)
 
 #Plot matrix table to see strength of relationships
+fig4 <- ggcorrplot(
+  cor_mat, hc.order = TRUE, type = "lower", title = "Correlation matrix between school \nperformance and demographics", outline.col = "white",
+  p.mat = p.mat
+  )
 
-corrplot(cor_mat, method="circle", type = "upper",
-         tl.col="black", order="hclust",mar=c(0,0,1,0),
-         title="Corrolation between school performance and demographics")
+fig4<-ggplotly(fig4)
+fig4
+```
 
+A correlation analysis shows how strong the relationships between racial diversity and school programs are with the academic performance of the school.
+
+When it comes to demographics, academic performance shows a strong positive correlation with the percentage of white students in a school (r= 0.65). While it has the strongest negative relationship with the percentage of students that are eligible for food discount at a school (r= -0.72).
+
+Overall, the strongest positive relationships are among the perceptions of NYC schools. The respondents (teachers, students and parents) of the survey seem to have correlating perceptions of how NYC schools perform when it comes to academic performance, communication, engagement and safety. 
+
+####  How teachers, students and parents rate NYC schools 
+
+```{r rating, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=6,fig.path= "README_figs/README-"}
 #establish average scores per respondent group
 
 survey_score<-combined%>%
@@ -196,13 +289,24 @@ survey_score_longer<-survey_score%>%
 
 
 #Plot the spread of the respondents average scores
-survey_score_longer%>%ggplot(aes(x=respondent, y=avg_score))+
+fig5<-survey_score_longer%>%ggplot(aes(x=respondent, y=avg_score, fill=respondent))+
   geom_boxplot()+
   scale_x_discrete(labels=c("parent_score_avg" = "Parent", "student_score_avg" = "Student","teacher_score_avg" = "Teacher"))+
-  labs(title = "NYC School quality perception survey responses",
+  labs(title = "Perception of NYC schools quality (survey responsens)",
        y="Average rating",
        x="Respondent")+
   theme(plot.title = element_text(hjust = 0.5))
+
+fig5<-ggplotly(fig5)
+fig5<-hide_legend(fig5)
+fig5
+```
+Overall, parents seem to rate NYC schools the highest while students (not surprisingly `r emo::ji("smile")`) are rating the schools lowest. Teachers show the most broad rating of NYC schools. 
+
+
+####  How respondents rate NYC schools on academic performance, communication, engagement and, safety and respect
+
+```{r questions, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=6,fig.path= "README_figs/README-"}
 
 #Pivot table longer to establish individual rating per question type
 que_score<-combined%>%
@@ -225,20 +329,20 @@ que_score <- que_score%>%
 
 #Boxplot to see if there appear to be differences in how the three groups of responders (parents, students, and teachers) answered the four questions. 
 
-que_score %>%
-  ggplot(aes(x = question, y = rating, fill = respondent)) +
-  geom_boxplot()+
-  labs(title = "NYC School quality perception survey questions and responses",
-       x="Survey questions",
-       y="Rating")+
-   scale_fill_manual(
-    name="Survey Responses",
-    values = c("firebrick3", "springGreen3", "DodgerBlue3"),
-    labels=c("Parent", "Student", "Teacher")
-  )+
-  scale_x_discrete(labels=c("aca" = "Academic \nExpectations", "com" = "Communication","eng" = "Engagement", "saf" = "Safety and \nRespect"))+
-  theme(plot.title = element_text(hjust = 0.5))
+que_score<-as.data.frame(que_score)
+
+fig6<-plot_ly(data = que_score, x=~question, y =~rating, color =~respondent, 
+        type = "box") %>% 
+         layout(boxmode = "group", title="NYC School quality perception survey questions and responses",
+         xaxis = list(title='survey questions',
+                      ticktext = list("Academic \nExpectations", "Communication", "Engagement", "Safety and \nRespect"), 
+      tickvals = list("aca","com","eng","saf"), 
+         yaxis = list(title='Percentage')))
+
+fig6
 
 ```
 
+<b><br>
+Looking on how individual groups responded, the best rating was for **safety and respect** by parent respondents and the lowest was for **communication** by student respondents.
 
