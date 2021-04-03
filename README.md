@@ -206,6 +206,7 @@ fig3<-combined_type_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=`Type 
   )+
   theme(plot.title = element_text(hjust = 0.5))+ #strip.text.x = element_blank()
   facet_wrap(~`Type of program`, labeller = labeller(`Type of program`=prog.labs))
+  
 ```
 
 <center>
@@ -336,6 +337,7 @@ fig6<-plot_ly(data = que_score, x=~question, y =~rating, color =~respondent,
                       ticktext = list("Academic \nExpectations", "Communication", "Engagement", "Safety and \nRespect"), 
       tickvals = list("aca","com","eng","saf"), 
          yaxis = list(title='Percentage')))
+fig6
 ```
 
 <b><br>
