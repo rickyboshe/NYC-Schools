@@ -1,1 +1,3 @@
-*.* linguist-language=R
+*.sql linguist-detectable=true
+*.md linguist-detectable=true
+*.R linguist-detectable=true
