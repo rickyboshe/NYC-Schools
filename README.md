@@ -31,6 +31,8 @@ library(dplyr)
 library(corrplot)
 library(plotly)
 library(ggcorrplot)
+library(scales)
+library(tufte)
 devtools::install_github("hadley/emo")
 ```
 
@@ -125,7 +127,8 @@ fig1<-combined_boro_longer%>%ggplot(aes(x=boro, y=avg_sat_score, fill=boro))+
        y="Average SAT Score",
        x="Borough",
        fill="Borough")+
-  theme(plot.title = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme_minimal()
 ```
 
 <center>
@@ -139,15 +142,35 @@ to schools in Manhattan or Staten Island. This is not surprising
 considering the Socio-economic profile of the Boroughs in New York City.
 <br><br>
 
-<center>
+<div id="viz1618409905548" class="tableauPlaceholder" style="position: relative">
 
-![Socio-economic profile of NYC Boroughs](README_figs/Profile.png)
+<noscript>
 
-</center>
+<a href='#'><img alt='NYC profile ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;NY&#47;NYCSocio-economicprofile&#47;NYCprofile&#47;1_rss.png' style='border: none' /></a>
+
+</noscript>
+
+<object class="tableauViz" style="display:none;">
+
+<param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+<param name='embed_code_version' value='3' />
+<param name='site_root' value='' /><param name='name' value='NYCSocio-economicprofile&#47;NYCprofile' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;NY&#47;NYCSocio-economicprofile&#47;NYCprofile&#47;1.png' />
+<param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en' />
+
+</object>
+
+</div>
+
+<script type='text/javascript'> var divElement = document.getElementById('viz1618409905548'); var vizElement = divElement.getElementsByTagName('object')[0];if ( divElement.offsetWidth > 800 ) { vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.65)+'px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.65)+'px';} else { vizElement.style.width='100%';vizElement.style.height='650px';} var scriptElement = document.createElement('script'); scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';     vizElement.parentNode.insertBefore(scriptElement, vizElement);                
+</script>
 
 <br><br>
 
+<center>
+
 ### **Trend of NYC school performance with racial diversity of schools**
+
+</center>
 
 #### **How racial diversity relates to school performance**
 
@@ -168,14 +191,14 @@ fig2<-combined_race_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=race))
     labels=c("Asian", "Black", "Hispanic", "White")
   )+
   theme(plot.title = element_text(hjust = 0.5))+
+  theme_minimal()+
   facet_wrap(~race, labeller = labeller(race=race.labs))
+
+fig2
 ```
 
-<center>
-
-![](README_figs/README-plot-1.png)
-
-</center>
+<img src="NYC-Guided-project_files/figure-gfm/plot-1.png" style="display: block; margin: auto;" />
+<br></br>
 
 Schools with a higher proportion of Black and Hispanic have lower SAT
 scores as compared to schools with a higher share of White and Asian
@@ -204,7 +227,8 @@ fig3<-combined_type_longer%>%ggplot(aes(x=percent, y=avg_sat_score, color=`Type 
     values = c("maroon", "forestgreen", "chocolate"),
     labels=c("Receiving lunch \ndiscount", "Learning to speak \nEnglish", "Receiving specialized \nteaching")
   )+
-  theme(plot.title = element_text(hjust = 0.5))+ #strip.text.x = element_blank()
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme_minimal()+
   facet_wrap(~`Type of program`, labeller = labeller(`Type of program`=prog.labs))
 ```
 
@@ -220,14 +244,25 @@ a school. This is an indication of a school being in a socially and
 economically disadvantaged location. Such schools rarely have enough
 resources to help students perform better academically.
 
-An increase in the sahre of students learning to speak English is also
+An increase in the share of students learning to speak English is also
 related to lower academic performance for the school. Learning to speak
 English can be an indicator of share of students with a lower economic
 migrant background. <br><br>
 
+<img src="NYC-Guided-project_files/figure-gfm/programs-1.png" style="display: block; margin: auto;" />
+
+Creating an arbitrary cut-off of 30%, i looked into the share of schools
+in each borough with at least a third of its students eligible or
+participating in the special programs. Again, Staten Island had the
+fewest schools with students taking up special programs while the Bronx
+had the most. This matches with the socio-economic profiles of the
+respective boroughs.
+
+This gap also translates to average SAT scores as shown in an earlier
+chart between the boroughs.
+
 ``` r
 p.mat<-cor_pmat(cor_mat)#pvalues
-
 cor_tib<-cor_mat%>%
   as_tibble(rownames="variable")#A tibble for easier viewing
 
@@ -243,8 +278,7 @@ strong_cor_mat<-as.matrix(strong_cor)
 #Plot matrix table to see strength of relationships
 fig4 <- ggcorrplot(
   cor_mat, hc.order = TRUE, type = "lower", title = "Correlation matrix between school \nperformance and demographics", outline.col = "white",
-  p.mat = p.mat
-  )
+  p.mat = p.mat)
 ```
 
 <center>
@@ -288,12 +322,13 @@ survey_score_longer<-survey_score%>%
 
 #Plot the spread of the respondents average scores
 fig5<-survey_score_longer%>%ggplot(aes(x=respondent, y=avg_score, fill=respondent))+
-  geom_boxplot()+
+  geom_boxplot(show.legend = FALSE)+
   scale_x_discrete(labels=c("parent_score_avg" = "Parent", "student_score_avg" = "Student","teacher_score_avg" = "Teacher"))+
   labs(title = "Perception of NYC schools quality (survey responses)",
        y="Average rating",
        x="Respondent")+
-  theme(plot.title = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme_minimal()
 fig5
 ```
 
@@ -331,7 +366,7 @@ que_score<-as.data.frame(que_score)
 
 fig6<-plot_ly(data = que_score, x=~question, y =~rating, color =~respondent, 
         type = "box") %>% 
-         layout(boxmode = "group", title="NYC School quality perception survey questions and responses",
+         layout(boxmode = "group", title="<b>NYC School quality perception survey questions and responses<b>",
          xaxis = list(title='survey questions',
                       ticktext = list("Academic \nExpectations", "Communication", "Engagement", "Safety and \nRespect"), 
       tickvals = list("aca","com","eng","saf"), 
@@ -342,8 +377,35 @@ fig6
 
 <img src="NYC-Guided-project_files/figure-gfm/questions-1.png" style="display: block; margin: auto;" />
 
-<b><br>
+<br><br>
 
 Looking on how individual groups responded, the best rating was for
 **safety and respect** by parent respondents and the lowest was for
 **communication** by student respondents.
+
+Interesting to note that across each borough, the responses to the
+survey were somewhat similar. The box plot below shows how even the
+worst academically performing borough (Bronx) has half the respondents
+rating schools at a score of 7.17 while Staten Island, which is better
+off academically and economically has half the respondents scoring their
+schools at 7.30 rating.
+
+<img src="NYC-Guided-project_files/figure-gfm/boro-1.png" style="display: block; margin: auto;" />
+
+This proves what we saw in the correlation matrix, that how respondents
+rated schools do not have a strong correlation nor a statistically
+significant one with actual school performance. But how respondents
+rated schools do closely correlate to each other.
+
+This could mean there is a perception bubble amongst teachers, studnets
+and parents. Sadly, it does not match reality.
+
+Perceptions are a funny thing.
+
+> “Humans see what they want to see.”
+> 
+> <footer>
+> 
+> — Rick Riordan, The Lightning Thief
+> 
+> </footer>
