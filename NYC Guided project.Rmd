@@ -140,7 +140,7 @@ fig1<-combined_boro_longer%>%ggplot(aes(x=boro, y=avg_sat_score, fill=boro))+
 ```
 
 <center>
-```{r include=TRUE, echo=FALSE, message=FALSE, warning=FALSE, fig.align= "center", out.width='100%', out.height='100%'}
+```{r include=TRUE, echo=FALSE, message=FALSE, warning=FALSE, fig.align= "center", fig.width=7.5, fig.height=5.5}
 
 fig1<-ggplotly(fig1)#%>% config(responsive=TRUE, displayModeBar = FALSE)
 #api_create(fig1, filename = "Average school performance by Borough in NYC (2011)")
@@ -155,7 +155,6 @@ Schools in the Bronx are averaging lower SAT scores as compared to schools in Ma
 
 Overall, school performance in New York City is indeed split along the demographic backgrounds and socio-economic lines.
 <br><br>
-
 
 
 <div class='tableauPlaceholder' id='viz1618409905548' style='position: relative'><noscript><a href='#'><img alt='NYC profile ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;NY&#47;NYCSocio-economicprofile&#47;NYCprofile&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='NYCSocio-economicprofile&#47;NYCprofile' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;NY&#47;NYCSocio-economicprofile&#47;NYCprofile&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en' /></object></div> <script type='text/javascript'> var divElement = document.getElementById('viz1618409905548'); var vizElement = divElement.getElementsByTagName('object')[0];if ( divElement.offsetWidth > 800 ) { vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.65)+'px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.65)+'px';} else { vizElement.style.width='100%';vizElement.style.height='650px';} var scriptElement = document.createElement('script'); scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';     vizElement.parentNode.insertBefore(scriptElement, vizElement);                
@@ -204,7 +203,7 @@ rownames(cor_mat)<-c("Avg_SAT_score", "% food dis",
 ####  How racial diversity relates to school performance 
 
 Renaming of indicators to help improve the aesthetics of the chart. 
-```{r plot, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", out.width='100%', out.height='100%'}
+```{r plot, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=8, fig.height=6}
 
 #Relationship between school performance and their racial diversity
 race.labs<-c("Asian", "Black", "Hispanic", "White")
@@ -243,10 +242,8 @@ fig2<-ggplotly(fig2)
 
 #move the y-axis title more left and x-axis title lower
 fig2[['x']][['layout']][['annotations']][[2]][['x']] <- -0.07
-fig2[['x']][['layout']][['annotations']][[1]][['y']] <- -0.06
-fig2 %>% layout(margin = list(l = 75, t=75))
-
-#api_create(fig2, filename = "Relationship between SAT scores and racial composition of schools in NYC")
+fig2[['x']][['layout']][['annotations']][[1]][['y']] <- -0.05
+fig2 %>% layout(margin = list(l = 75, t=75, b=50))
 
 ```
 
@@ -257,7 +254,7 @@ Schools in boroughs like Staten Island and Manhattan would have more resources a
 
 ####  How schools with special programs fair in academic performance
 
-```{r perform, include=TRUE,  warning=FALSE, message=FALSE, fig.align= "center", out.width='100%', out.height='100%'}
+```{r perform, include=TRUE,  warning=FALSE, message=FALSE, fig.align= "center", fig.width=8, fig.height=6}
 
 #Trend of SAT scores with the type of program available for students
 prog.labs<-c("Learning to speak English", "Receiving lunch discount",
@@ -295,10 +292,9 @@ fig3<-ggplotly(fig3)
 
 #move the y-axis title more left and x-axis title lower
 fig3[['x']][['layout']][['annotations']][[2]][['x']] <- -0.06
-fig3[['x']][['layout']][['annotations']][[1]][['y']] <- -0.06
-fig3 %>% layout(margin = list(l = 75, t=75))
+fig3[['x']][['layout']][['annotations']][[1]][['y']] <- -0.05
+fig3 %>% layout(margin = list(l = 75, t=75, b= 50))
 
-#api_create(fig3, filename = "Relationship between SAT scores and socio-economic factors")
 
 ```
 
@@ -309,7 +305,7 @@ The most significant observation is how drastically school performance drops wit
 An increase in the share of students learning to speak English is also related to lower academic performance for the school. Learning to speak English can be an indicator of share of students with a lower economic migrant background. 
 <br><br>
 
-```{r programs, echo=FALSE, out.height='100%', out.width='100%', fig.align="center", message=FALSE, warning=FALSE}
+```{r programs, echo=FALSE, fig.width=8, fig.height=5.5, fig.align="center", message=FALSE, warning=FALSE}
 
 combined2<-combined%>%
   drop_na(boro)%>%
@@ -403,7 +399,7 @@ fig5 <- ggcorrplot(
 ```
 
 <center>
-```{r include=TRUE, echo=FALSE,fig.align= "center", warning=FALSE, out.width='100%', out.height='100%'}
+```{r include=TRUE, echo=FALSE,fig.align= "center", warning=FALSE, fig.width=7, fig.height=6,}
 
 fig5<-ggplotly(fig5)#%>%config(responsive=TRUE, displayModeBar = FALSE)
 #api_create(fig5, filename = "Correlation between school \nperformance and demographics")
@@ -419,7 +415,7 @@ When it comes to demographics, academic performance shows a strong positive corr
 
 ####  How teachers, students and parents rate NYC schools 
 
-```{r rating, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", out.width='100%', out.height='100%', fig.height=5}
+```{r rating, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=6}
 #establish average scores per respondent group
 
 survey_score<-combined%>%
@@ -465,7 +461,7 @@ This is an indication of how similar the perceptions of individual groups are am
 
 ####  Survey responses on quality of NYC schools
 
-```{r questions, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", out.width='100%', out.height='100%'}
+```{r questions, include=TRUE, echo=TRUE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=8, fig.height=5.5}
 
 #Pivot table longer to establish individual rating per question type
 que_score<-combined%>%
@@ -511,7 +507,7 @@ Interesting to note that across each borough, the responses to the survey were s
 
 
 
-```{r boro, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.align= "center", out.width='100%', out.height='100%'}
+```{r boro, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.align= "center", fig.width=7, fig.height=6}
 #establish average scores per respondent group
 
 survey_score<-combined%>%
@@ -543,7 +539,7 @@ fig8<-ggplotly(fig8)#%>%config(boro, displayModeBar = FALSE)
 fig8
 ```
 
-```{r corr2, echo=FALSE, out.height='100%', out.width='100%', warning=FALSE}
+```{r corr2, echo=FALSE, fig.width=6, fig.height=5,fig.align='center', warning=FALSE}
 
 comb<-combined%>%
   select(avg_sat_score, contains("tot_11"))

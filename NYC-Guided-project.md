@@ -127,7 +127,7 @@ fig1<-combined_boro_longer%>%ggplot(aes(x=boro, y=avg_sat_score, fill=boro))+
 ```
 
 <center>
-<img src="NYC-Guided-project_files/figure-gfm/unnamed-chunk-1-1.png" width="100%" height="100%" style="display: block; margin: auto;" />
+<img src="NYC-Guided-project_files/figure-gfm/unnamed-chunk-1-1.png" style="display: block; margin: auto;" />
 </center>
 
 <br><br> Schools in the Bronx are averaging lower SAT scores as compared
@@ -235,15 +235,11 @@ fig2<-ggplotly(fig2)
 
 #move the y-axis title more left and x-axis title lower
 fig2[['x']][['layout']][['annotations']][[2]][['x']] <- -0.07
-fig2[['x']][['layout']][['annotations']][[1]][['y']] <- -0.06
-fig2 %>% layout(margin = list(l = 75, t=75))
+fig2[['x']][['layout']][['annotations']][[1]][['y']] <- -0.05
+fig2 %>% layout(margin = list(l = 75, t=75, b=50))
 ```
 
-<img src="NYC-Guided-project_files/figure-gfm/plot-1.png" width="100%" height="100%" style="display: block; margin: auto;" />
-
-``` r
-#api_create(fig2, filename = "Relationship between SAT scores and racial composition of schools in NYC")
-```
+<img src="NYC-Guided-project_files/figure-gfm/plot-1.png" style="display: block; margin: auto;" />
 
 Schools with a higher proportion of Black and Hispanic have lower SAT
 scores as compared to schools with a higher share of White and Asian
@@ -293,15 +289,11 @@ fig3<-ggplotly(fig3)
 
 #move the y-axis title more left and x-axis title lower
 fig3[['x']][['layout']][['annotations']][[2]][['x']] <- -0.06
-fig3[['x']][['layout']][['annotations']][[1]][['y']] <- -0.06
-fig3 %>% layout(margin = list(l = 75, t=75))
+fig3[['x']][['layout']][['annotations']][[1]][['y']] <- -0.05
+fig3 %>% layout(margin = list(l = 75, t=75, b= 50))
 ```
 
-<img src="NYC-Guided-project_files/figure-gfm/perform-1.png" width="100%" height="100%" style="display: block; margin: auto;" />
-
-``` r
-#api_create(fig3, filename = "Relationship between SAT scores and socio-economic factors")
-```
+<img src="NYC-Guided-project_files/figure-gfm/perform-1.png" style="display: block; margin: auto;" />
 
 The most significant observation is how drastically school performance
 drops with increase in number of students eligible for lunch discount at
@@ -314,7 +306,7 @@ related to lower academic performance for the school. Learning to speak
 English can be an indicator of share of students with a lower economic
 migrant background. <br><br>
 
-<img src="NYC-Guided-project_files/figure-gfm/programs-1.png" width="100%" height="100%" style="display: block; margin: auto;" />
+<img src="NYC-Guided-project_files/figure-gfm/programs-1.png" style="display: block; margin: auto;" />
 
 Creating an arbitrary cut-off of 30%, i looked into the share of schools
 in each borough with at least a third of its students eligible or
@@ -347,7 +339,7 @@ fig5 <- ggcorrplot(
 ```
 
 <center>
-<img src="NYC-Guided-project_files/figure-gfm/unnamed-chunk-2-1.png" width="100%" height="100%" style="display: block; margin: auto;" />
+<img src="NYC-Guided-project_files/figure-gfm/unnamed-chunk-2-1.png" style="display: block; margin: auto;" />
 </center>
 
 A correlation analysis shows how strong the relationships between racial
@@ -398,7 +390,7 @@ fig6<-survey_score_longer%>%ggplot(aes(x=respondent, y=avg_score, fill=responden
 fig6
 ```
 
-<img src="NYC-Guided-project_files/figure-gfm/rating-1.png" width="100%" height="100%" style="display: block; margin: auto;" />
+<img src="NYC-Guided-project_files/figure-gfm/rating-1.png" style="display: block; margin: auto;" />
 
 <br><br> Overall, parents seem to rate NYC schools the highest while
 students (not surprisingly 😄) are rating the schools lowest. Teachers
@@ -448,7 +440,7 @@ fig7<-plot_ly(data = que_score, x=~question, y =~Rating, color =~respondent,
 fig7
 ```
 
-<img src="NYC-Guided-project_files/figure-gfm/questions-1.png" width="100%" height="100%" style="display: block; margin: auto;" />
+<img src="NYC-Guided-project_files/figure-gfm/questions-1.png" style="display: block; margin: auto;" />
 
 <br><br>
 
@@ -463,9 +455,9 @@ rating schools at a score of 7.17 while Staten Island, which is better
 off academically and economically has half the respondents scoring their
 schools at 7.30 rating.
 
-<img src="NYC-Guided-project_files/figure-gfm/boro-1.png" width="100%" height="100%" style="display: block; margin: auto;" />
+<img src="NYC-Guided-project_files/figure-gfm/boro-1.png" style="display: block; margin: auto;" />
 
-<img src="NYC-Guided-project_files/figure-gfm/corr2-1.png" width="100%" height="100%" />
+<img src="NYC-Guided-project_files/figure-gfm/corr2-1.png" style="display: block; margin: auto;" />
 
 This proves what we saw in the correlation matrix, that how respondents
 rated schools do not have a strong correlation nor a statistically
