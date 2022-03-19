@@ -142,7 +142,8 @@ fig1<-combined_boro_longer%>%ggplot(aes(x=boro, y=avg_sat_score, fill=boro))+
 <center>
 ```{r include=TRUE, echo=FALSE, message=FALSE, warning=FALSE, fig.align= "center", fig.width=7.5, fig.height=5.5}
 
-fig1<-ggplotly(fig1)#%>% config(responsive=TRUE, displayModeBar = FALSE)
+fig1<-ggplotly(fig1)%>%
+  partial_bundle()#%>% config(responsive=TRUE, displayModeBar = FALSE)
 #api_create(fig1, filename = "Average school performance by Borough in NYC (2011)")
 fig1
 
